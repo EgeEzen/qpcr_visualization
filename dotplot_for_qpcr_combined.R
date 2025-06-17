@@ -9,21 +9,27 @@ library(readxl)
 library(tidyr)
 library(ggrepel)
 
-setwd("~/Desktop/PhD/2025 First Term/QPCR/20250604/")
+setwd("~/Desktop/PhD/2025 First Term/QPCR/20250520")
 
 #read the data
-data <- read_excel("stimulation_ra_oa_healthy_final_list.xlsx")
+data <- read_excel("stimulation_oa_healthy_final_list.xlsx")
 
 #have the logarithmic fold changes
 data$Log2FC_SOD2 <- log2(data$FC_SOD2)
 data$Log2FC_HIF1a <- log2(data$FC_HIF1a)
 data$Log2FC_GLUT1 <- log2(data$FC_GLUT1)
+data$Log2FC_CD74 <- log2(data$FC_CD74)
+data$Log2FC_IL6 <- log2(data$FC_IL6)
+data$Log2FC_HLA_DRA <- log2(data$FC_HLA_DRA)
+data$Log2FC_CHI3L1 <- log2(data$FC_CHI3L1)
+data$Log2FC_EPAS2 <- log2(data$FC_EPAS2)
 
 #filter for only a stimulation group and patient group to show it in a graph
-selected_stimulation <- "IFNg"
+selected_stimulation <- "IL6"
 selected_data <- data %>%
   filter(Stimulation == selected_stimulation ) %>%
-  select(Patient, Patient_Group, Log2FC_HIF1a, Log2FC_SOD2,Log2FC_GLUT1)
+  select(Patient, Patient_Group, Log2FC_HIF1a, Log2FC_SOD2, 
+         Log2FC_GLUT1,Log2FC_IL6,Log2FC_CHI3L1, Log2FC_EPAS2)
  #or select(Patient, Patient_Group, Log2FC_CD74, Log2FC_HLA_DRA)
 
 #reshape the dataframe
@@ -37,7 +43,12 @@ selected_data <- selected_data %>%
   mutate(Gene = recode(Gene,
                        "Log2FC_HIF1a" = "HIF1a",
                        "Log2FC_SOD2" = "SOD2",
-                       "Log2FC_GLUT1" = "GLUT1"))
+                       "Log2FC_GLUT1" = "GLUT1",
+                       "Log2FC_CD74" = "CD74",
+                       "Log2FC_IL6" = "IL6", 
+                       "Log2FC_HLA_DRA" = "HLA-DRA",
+                       "Log2FC_EPAS2" = "EPAS2",
+                       "Log2FC_CHI3L1" = "CHI3L1"))
 
 # calculate p values with t-test
 pvals <- selected_data %>%
@@ -70,7 +81,7 @@ p <- ggplot(selected_data, aes(x = Patient_Group, y = Log2FC)) +
   theme_publish() +
   theme(legend.position = "none",plot.background = element_rect(fill = "transparent",colour = NA),
         axis.text.x = element_text(angle = 0)) +
-  scale_fill_manual(values = c("Healthy" = "#9FC2CC", "OA" ="#694D75","RA" = "#9a2809")) +
+  scale_fill_manual(values = c("Healthy" = "#9FC2CC", "OA" ="#694D75")) +
   geom_text(data = pvals, aes(x = Patient_Group, y = max(selected_data$Log2FC) + 0.6, label = label)) 
 # geom_label_repel(
  #    aes(label = Patient),
@@ -89,6 +100,6 @@ ggsave(
   filename = paste0(selected_stimulation,"_stimulated_w_violin_healthy_and_OA_1.png"),
   bg = "transparent",
   dpi = 1000,
-  width = 8, height = 4
+  width = 6, height = 6
 )
 
