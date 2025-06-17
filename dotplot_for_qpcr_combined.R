@@ -22,14 +22,14 @@ data$Log2FC_CD74 <- log2(data$FC_CD74)
 data$Log2FC_IL6 <- log2(data$FC_IL6)
 data$Log2FC_HLA_DRA <- log2(data$FC_HLA_DRA)
 data$Log2FC_CHI3L1 <- log2(data$FC_CHI3L1)
-data$Log2FC_EPAS2 <- log2(data$FC_EPAS2)
+data$Log2FC_EPAS1 <- log2(data$FC_EPAS1)
 
 #filter for only a stimulation group and patient group to show it in a graph
-selected_stimulation <- "IL6"
+selected_stimulation <- "IFNg"
 selected_data <- data %>%
   filter(Stimulation == selected_stimulation ) %>%
   select(Patient, Patient_Group, Log2FC_HIF1a, Log2FC_SOD2, 
-         Log2FC_GLUT1,Log2FC_IL6,Log2FC_CHI3L1, Log2FC_EPAS2)
+         Log2FC_GLUT1,Log2FC_IL6,Log2FC_CHI3L1, Log2FC_EPAS1)
  #or select(Patient, Patient_Group, Log2FC_CD74, Log2FC_HLA_DRA)
 
 #reshape the dataframe
@@ -47,7 +47,7 @@ selected_data <- selected_data %>%
                        "Log2FC_CD74" = "CD74",
                        "Log2FC_IL6" = "IL6", 
                        "Log2FC_HLA_DRA" = "HLA-DRA",
-                       "Log2FC_EPAS2" = "EPAS2",
+                       "Log2FC_EPAS1" = "EPAS1",
                        "Log2FC_CHI3L1" = "CHI3L1"))
 
 # calculate p values with t-test
